@@ -51,10 +51,10 @@ func newLogger(cfg Config) (*Logger, error) {
 	if cfg.LogFile != "" {
 		logFile := &lumberjack.Logger{
 			Filename:   cfg.LogFile,
-    		MaxSize:    500, // megabytes
-    		MaxBackups: 3,
-    		MaxAge:     28, //days
-    		Compress:   true, // disabled by default
+			MaxSize:    500, // megabytes
+			MaxBackups: 3,
+			MaxAge:     28,   //days
+			Compress:   true, // disabled by default
 		}
 
 		fileCore := zapcore.NewCore(
