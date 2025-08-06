@@ -87,7 +87,7 @@ func (r *Repository) GetUserByID(ctx context.Context, uid string) (*user.User, e
 	return &user, nil
 }
 
-func (r *Repository) GetByUsername(ctx context.Context, username string) (*user.User, error) {
+func (r *Repository) GetUserByUsername(ctx context.Context, username string) (*user.User, error) {
 	user, err := gorm.G[user.User](r.db).Where("username = ?", username).First(ctx)
 	if err != nil {
 		r.logger.Error("failed fetch user",
