@@ -8,9 +8,9 @@ import (
 
 func NewJwtKey(uid, key string, dur time.Duration) (string, error) {
 	claims := jwt.MapClaims{
-		"uid" : uid,
-		"exp" : time.Now().Add(dur).Unix(),
-		"iat" : time.Now().Unix(),
+		"uid": uid,
+		"exp": time.Now().Add(dur).Unix(),
+		"iat": time.Now().Unix(),
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
