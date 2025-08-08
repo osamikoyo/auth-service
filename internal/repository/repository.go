@@ -5,6 +5,7 @@ import (
 	"auth/pkg/logger"
 	"context"
 	"errors"
+	"fmt"
 
 	"go.uber.org/zap"
 	"gorm.io/gorm"
@@ -29,16 +30,16 @@ func NewRepository(db *gorm.DB, logger *logger.Logger) *Repository {
 }
 
 func (r *Repository) CreateUser(ctx context.Context, usr *user.User) error {
-	if err := gorm.G[user.User](r.db).Create(ctx, usr); err != nil {
-		r.logger.Error("failed create user",
-			zap.Any("user", usr),
-			zap.Error(err))
+	var existingUser user.User
+	if err := r.db.Where("username = ?", usr.Username).First(&existingUser).Error; err == nil {
+		return fmt.Errorf("user with username %s already exists", usr.Username)
+	} else if !errors.Is(err, gorm.ErrRecordNotFound) {
+		return fmt.Errorf("error checking user existence: %v", err)
+	}
 
-		if errors.Is(err, gorm.ErrDuplicatedKey) {
-			return ErrAlreadyExist
-		}
-
-		return ErrRepositoryFailed
+	if err := r.db.Create(usr).Error; err != nil {
+		r.logger.Error("failed create user", zap.Error(err))
+		return fmt.Errorf("error creating user: %v", err)
 	}
 
 	r.logger.Info("user created", zap.Any("user", usr))
