@@ -1,0 +1,143 @@
+definitions:
+  user.User:
+    properties:
+      created_at:
+        type: string
+      password:
+        type: string
+      username:
+        type: string
+      uuid:
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /account/delete:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a user account by UID (requires authentication)
+      produces:
+      - text/plain
+      responses:
+        "200":
+          description: deleted
+          schema:
+            type: string
+        "400":
+          description: failed get uid
+          schema:
+            type: string
+        "500":
+          description: internal server error
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Delete user account
+      tags:
+      - account
+  /account/get:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve user account details by UID (requires authentication)
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User account details
+          schema:
+            $ref: '#/definitions/user.User'
+        "400":
+          description: failed get uid
+          schema:
+            type: string
+        "500":
+          description: internal server error
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Get user account
+      tags:
+      - account
+  /health:
+    get:
+      consumes:
+      - application/json
+      description: Check if the service is running
+      produces:
+      - text/plain
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: Health check
+      tags:
+      - health
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: Authenticate a user and return a JWT token
+      parameters:
+      - description: User credentials
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/user.User'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: JWT token
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: invalid input
+          schema:
+            type: string
+        "500":
+          description: internal server error
+          schema:
+            type: string
+      summary: User login
+      tags:
+      - auth
+  /register:
+    post:
+      consumes:
+      - application/json
+      description: Register a new user and return a JWT token
+      parameters:
+      - description: User registration details
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/user.User'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: JWT token
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: invalid input
+          schema:
+            type: string
+        "500":
+          description: internal server error
+          schema:
+            type: string
+      summary: User registration
+      tags:
+      - auth
+swagger: "2.0"
